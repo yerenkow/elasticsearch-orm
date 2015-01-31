@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ElasticCachedClient {
+public class ElasticClientFactory {
 
     public static final String SETTING_CLUSTER_NAME = "cluster.name";
 
     private static final String UNDERSCORE = "_";
-    private static final HashMap<String, BaseElasticClient> POOL = new HashMap<>();
+    private static final HashMap<String, BaseElasticClient> ELASTIC_CLIENT_MAP = new HashMap<>();
 
     public static BaseElasticClient getInstance(String host, int port, Map<String, String> settingsMap) {
 
@@ -24,18 +24,18 @@ public class ElasticCachedClient {
 
         final String key = host + UNDERSCORE + port + UNDERSCORE + getHashCode(settingsMap);
 
-        if (!POOL.containsKey(key)) {
-            synchronized (POOL) {
-                if (!POOL.containsKey(key)) {
+        if (!ELASTIC_CLIENT_MAP.containsKey(key)) {
+            synchronized (ELASTIC_CLIENT_MAP) {
+                if (!ELASTIC_CLIENT_MAP.containsKey(key)) {
                     Client client = new TransportClient(settings)
                             .addTransportAddress(new InetSocketTransportAddress(host, port));
                     BaseElasticClient baseElasticClient = new BaseElasticClient(client, new ElasticClientConfig());
                     System.out.println("Put key [" + key + "]");
-                    POOL.put(key, baseElasticClient);
+                    ELASTIC_CLIENT_MAP.put(key, baseElasticClient);
                 }
             }
         }
-        return POOL.get(key);
+        return ELASTIC_CLIENT_MAP.get(key);
     }
 
     private static String getHashCode(Map<String, String> map) {
@@ -58,14 +58,14 @@ public class ElasticCachedClient {
     }
 
     public static void destroyClients() {
-        final ArrayList<String> arrayList = new ArrayList(POOL.keySet());
+        final ArrayList<String> arrayList = new ArrayList(ELASTIC_CLIENT_MAP.keySet());
         for (String key : arrayList) {
-            final BaseElasticClient baseElasticClient = POOL.remove(key);
+            final BaseElasticClient baseElasticClient = ELASTIC_CLIENT_MAP.remove(key);
             System.out.println("Key [" + key + "] removed.");
             baseElasticClient.closeClient();
         }
     }
 
-    private ElasticCachedClient() {
+    private ElasticClientFactory() {
     }
 }

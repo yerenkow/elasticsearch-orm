@@ -2,7 +2,7 @@ package org.jcoffee.orm.dao;
 
 import org.jcoffee.orm.base.EntityBuilderI;
 import org.jcoffee.orm.elasticsearch.BaseElasticClient;
-import org.jcoffee.orm.elasticsearch.ElasticCachedClient;
+import org.jcoffee.orm.elasticsearch.ElasticClientFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class BaseElasticDao implements DaoI {
     }
 
     private BaseElasticClient getInstance() {
-        return ElasticCachedClient.getInstance(host, port, settings);
+        return ElasticClientFactory.getInstance(host, port, settings);
     }
 
     @Override

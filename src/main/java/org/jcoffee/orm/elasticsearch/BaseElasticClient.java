@@ -37,7 +37,7 @@ public class BaseElasticClient {
 
     public boolean update(String index, String type, Map<String, Object> doc) {
         UpdateRequestBuilder updateRequestBuilder = client.prepareUpdate(index, type, (String) doc.get("id"));
-        updateRequestBuilder.setDoc(doc);
+        updateRequestBuilder.setRetryOnConflict(config.getRetryOnConflict()).setDoc(doc);
         return !updateRequestBuilder.execute().actionGet().isCreated();
     }
 
