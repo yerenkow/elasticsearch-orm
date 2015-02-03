@@ -6,6 +6,9 @@ import org.jcoffee.orm.exception.AnnotationNotFoundException;
 
 import java.util.Map;
 
+/**
+ * Created by Aleksandr Simonchuk on 31.01.15.
+ */
 public class EntityBuilder<T> implements EntityBuilderI<T> {
 
     private final TransformerI<T> transformer;

@@ -5,6 +5,9 @@ import org.jcoffee.orm.base.EntityBuilderI;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Created by Aleksandr Simonchuk on 31.01.15.
+ */
 public interface DaoI {
 
     <T> boolean save(T object, EntityBuilderI builder);

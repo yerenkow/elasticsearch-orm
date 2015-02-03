@@ -4,6 +4,9 @@ import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
 
+/**
+ * Created by Aleksandr Simonchuk on 31.01.15.
+ */
 public class UnsafeMemory {
 
     private static final Unsafe UNSAFE;
@@ -18,8 +21,14 @@ public class UnsafeMemory {
         }
     }
 
-    public static Object allocateInstance(Class aClass) throws InstantiationException {
-        return UNSAFE.allocateInstance(aClass);
+    public static Object allocateInstance(Class aClass) {
+        Object object = null;
+        try {
+            object = UNSAFE.allocateInstance(aClass);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        return object;
     }
 
     public static Object getFieldObject(Object baseObject, long offset) {

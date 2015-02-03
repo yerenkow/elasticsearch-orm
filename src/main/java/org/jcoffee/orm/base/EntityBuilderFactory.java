@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+/**
+ * Created by Aleksandr Simonchuk on 31.01.15.
+ */
 public class EntityBuilderFactory {
     private static final Map<Class, EntityBuilder> ENTITY_BUILDER_MAP = new HashMap<>();
     public static final ReadWriteLock LOCK = new ReentrantReadWriteLock();

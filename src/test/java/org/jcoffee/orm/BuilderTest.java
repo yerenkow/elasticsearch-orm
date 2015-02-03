@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+/**
+ * Created by Aleksandr Simonchuk on 31.01.15.
+ */
 public class BuilderTest {
     private static final Random RANDOM = new Random(System.currentTimeMillis());
 

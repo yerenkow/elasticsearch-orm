@@ -17,6 +17,9 @@ import java.util.Map;
 
 import static org.elasticsearch.action.index.IndexRequest.OpType.CREATE;
 
+/**
+ * Created by Aleksandr Simonchuk on 31.01.15.
+ */
 public class BaseElasticClient {
 
     private final Client client;

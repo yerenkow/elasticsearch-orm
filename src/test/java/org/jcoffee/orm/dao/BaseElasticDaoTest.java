@@ -21,6 +21,9 @@ import java.util.*;
 
 import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
+/**
+ * Created by Aleksandr Simonchuk on 31.01.15.
+ */
 public class BaseElasticDaoTest {
 
     private static Path esDataDir;
@@ -28,7 +31,7 @@ public class BaseElasticDaoTest {
     private static Random random;
 
     @Before
-    public void before() throws IOException {
+    public void before() throws IOException, InterruptedException {
         esDataDir = Paths.get("/tmp/elasticsearch_test/" + UUID.randomUUID().toString());
         random = new Random(System.currentTimeMillis());
         if (!Files.exists(esDataDir)) {
@@ -64,7 +67,6 @@ public class BaseElasticDaoTest {
         testClass.setSomeDoubleVar(random.nextDouble());
         testClass.setSomeBooleanVar(random.nextBoolean());
         testClass.setSomeStringVar(UUID.randomUUID().toString());
-        testClass.setSomeUuidVar(UUID.randomUUID());
 
 
         elasticDao.save(testClass, entityBuilder);
@@ -73,9 +75,9 @@ public class BaseElasticDaoTest {
 
         final List<BuilderTest.TestClass> list =
                 elasticDao.getByQuery(Collections.singletonMap("someIntegerVar", i), entityBuilder);
-        UUID uuid = list.get(0).getSomeUuidVar();
 
-        System.out.println(uuid.getClass().getName());
+        final BuilderTest.TestClass testClass1 = list.get(0);
+        System.out.println("");
     }
 
     public static void deleteDirectory(Path rootDirectory) throws IOException {

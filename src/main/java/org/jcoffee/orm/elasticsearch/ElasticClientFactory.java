@@ -11,6 +11,9 @@ import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+/**
+ * Created by Aleksandr Simonchuk on 31.01.15.
+ */
 public class ElasticClientFactory {
 
     public static final String SETTING_CLUSTER_NAME = "cluster.name";

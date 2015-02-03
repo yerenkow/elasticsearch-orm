@@ -6,6 +6,9 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Created by Aleksandr Simonchuk on 31.01.15.
+ */
 public class Transformer<T> implements TransformerI<T> {
 
     private final Class<T> clazz;
@@ -26,18 +29,11 @@ public class Transformer<T> implements TransformerI<T> {
     }
 
     public T fromMap(Map<String, Object> map) {
-        Object o = null;
-        try {
-            o = UnsafeMemory.allocateInstance(clazz);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
-
+        Object object = UnsafeMemory.allocateInstance(clazz);
         for (int i = 0; i < clazz.getDeclaredFields().length; i++) {
-            UnsafeMemory.putObject(o, declaredFieldsOffsets[i], map.get(declaredFieldsNames[i]));
+            UnsafeMemory.putObject(object, declaredFieldsOffsets[i], map.get(declaredFieldsNames[i]));
         }
-
-        return (T) o;
+        return (T) object;
     }
 
     public Map<String, Object> toMap(T object) {

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Created by Aleksandr Simonchuk on 31.01.15.
+ */
 public class BaseElasticDao implements DaoI {
 
     private final String host;
