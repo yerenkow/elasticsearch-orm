@@ -5,7 +5,6 @@ import org.jcoffee.orm.UnsafeMemory;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by Aleksandr Simonchuk on 31.01.15.
@@ -35,26 +34,26 @@ public class Transformer<T> implements TransformerI<T> {
         for (int i = 0; i < declaredFields.length; i++) {
             declaredFieldType = declaredFields[i].getType();
             if (declaredFieldType == Byte.class) {
-                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], ((Number) map.get(declaredFieldsNames[i])).byteValue());
+                final Number byteValue = (Number) map.get(declaredFieldsNames[i]);
+                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], byteValue != null ? byteValue.byteValue() : null);
             } else if (declaredFieldType == Short.class) {
-                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], ((Number) map.get(declaredFieldsNames[i])).shortValue());
+                final Number shortValue = (Number) map.get(declaredFieldsNames[i]);
+                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], shortValue != null ? shortValue.shortValue() : null);
             } else if (declaredFieldType == Integer.class) {
-                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], ((Number) map.get(declaredFieldsNames[i])).intValue());
+                final Number intValue = (Number) map.get(declaredFieldsNames[i]);
+                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], intValue != null ? intValue.intValue() : null);
             } else if (declaredFieldType == Long.class) {
-                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], ((Number) map.get(declaredFieldsNames[i])).longValue());
+                final Number longValue = (Number) map.get(declaredFieldsNames[i]);
+                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], longValue != null ? longValue.longValue() : null);
             } else if (declaredFieldType == Float.class) {
-                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], ((Number) map.get(declaredFieldsNames[i])).floatValue());
+                final Number floatValue = (Number) map.get(declaredFieldsNames[i]);
+                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], floatValue != null ? floatValue.floatValue() : null);
             } else if (declaredFieldType == Double.class) {
-                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], ((Number) map.get(declaredFieldsNames[i])).doubleValue());
-            } else if (declaredFieldType == UUID.class) {
-                final String uuid = (String) map.get(declaredFieldsNames[i]);
-                if (uuid != null) {
-                    UnsafeMemory.putObject(object, declaredFieldsOffsets[i], UUID.fromString(uuid));
-                }
+                final Number doubleValue = (Number) map.get(declaredFieldsNames[i]);
+                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], doubleValue != null ? doubleValue.doubleValue() : null);
             } else {
                 UnsafeMemory.putObject(object, declaredFieldsOffsets[i], map.get(declaredFieldsNames[i]));
             }
-
         }
         return (T) object;
     }

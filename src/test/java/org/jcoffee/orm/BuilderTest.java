@@ -29,7 +29,6 @@ public class BuilderTest {
         testClass.setSomeDoubleVar(RANDOM.nextDouble());
         testClass.setSomeBooleanVar(RANDOM.nextBoolean());
         testClass.setSomeStringVar(UUID.randomUUID().toString());
-        testClass.setSomeUuidVar(UUID.randomUUID());
 
         Assert.assertEquals(entityBuilder.getIndexName(), "stat");
         Assert.assertEquals(entityBuilder.getTypeName(), "adv");
@@ -44,7 +43,6 @@ public class BuilderTest {
         Assert.assertEquals(testClass.getSomeDoubleVar(), toMap.get("someDoubleVar"));
         Assert.assertEquals(testClass.getSomeBooleanVar(), toMap.get("someBooleanVar"));
         Assert.assertEquals(testClass.getSomeStringVar(), toMap.get("someStringVar"));
-        Assert.assertEquals(testClass.getSomeUuidVar(), toMap.get("someUuidVar"));
 
         TestClass fromMap = entityBuilder.buildFromMap(toMap);
 
@@ -56,7 +54,6 @@ public class BuilderTest {
         Assert.assertEquals(fromMap.getSomeDoubleVar(), testClass.getSomeDoubleVar());
         Assert.assertEquals(fromMap.getSomeBooleanVar(), testClass.getSomeBooleanVar());
         Assert.assertEquals(fromMap.getSomeStringVar(), testClass.getSomeStringVar());
-        Assert.assertEquals(fromMap.getSomeUuidVar(), testClass.getSomeUuidVar());
     }
 
     @Test
@@ -74,7 +71,6 @@ public class BuilderTest {
         Assert.assertNull(toMap.get("someDoubleVar"));
         Assert.assertNull(toMap.get("someBooleanVar"));
         Assert.assertNull(toMap.get("someStringVar"));
-        Assert.assertNull(toMap.get("someUuidVar"));
 
         final TestClass fromMap = entityBuilder.buildFromMap(toMap);
 
@@ -86,7 +82,6 @@ public class BuilderTest {
         Assert.assertNull(fromMap.getSomeDoubleVar());
         Assert.assertNull(fromMap.getSomeBooleanVar());
         Assert.assertNull(fromMap.getSomeStringVar());
-        Assert.assertNull(fromMap.getSomeUuidVar());
     }
 
     @Index(name = "stat")
@@ -100,7 +95,6 @@ public class BuilderTest {
         private Double someDoubleVar;
         private Boolean someBooleanVar;
         private String someStringVar;
-        private UUID someUuidVar;
 
         public Byte getSomeByteVar() {
             return someByteVar;
@@ -166,13 +160,6 @@ public class BuilderTest {
             this.someStringVar = someStringVar;
         }
 
-        public UUID getSomeUuidVar() {
-            return someUuidVar;
-        }
-
-        public void setSomeUuidVar(UUID someUuidVar) {
-            this.someUuidVar = someUuidVar;
-        }
     }
 
 }
