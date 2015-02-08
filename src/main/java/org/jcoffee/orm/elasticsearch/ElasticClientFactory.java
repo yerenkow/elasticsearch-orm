@@ -8,8 +8,8 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
 import java.util.*;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by Aleksandr Simonchuk on 31.01.15.
@@ -20,7 +20,7 @@ public class ElasticClientFactory {
 
     private static final String UNDERSCORE = "_";
     private static final Map<Integer, BaseElasticClient> ELASTIC_CLIENT_MAP = new HashMap<>();
-    private static final ReadWriteLock LOCK = new ReentrantReadWriteLock();
+    private static final Lock LOCK = new ReentrantLock();
 
     public static BaseElasticClient getInstance(String host, int port, Map<String, String> settingsMap) {
 
@@ -31,7 +31,7 @@ public class ElasticClientFactory {
 
         if (!ELASTIC_CLIENT_MAP.containsKey(key)) {
             try {
-                LOCK.readLock().lock();
+                LOCK.lock();
                 if (!ELASTIC_CLIENT_MAP.containsKey(key)) {
                     Client client = new TransportClient(settings)
                             .addTransportAddress(new InetSocketTransportAddress(host, port));
@@ -40,7 +40,7 @@ public class ElasticClientFactory {
                     ELASTIC_CLIENT_MAP.put(key, baseElasticClient);
                 }
             } finally {
-                LOCK.readLock().unlock();
+                LOCK.unlock();
             }
         }
         return ELASTIC_CLIENT_MAP.get(key);

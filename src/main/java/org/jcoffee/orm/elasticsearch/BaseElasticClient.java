@@ -84,6 +84,10 @@ public class BaseElasticClient {
         client.close();
     }
 
+    public Client getClient() {
+        return client;
+    }
+
     public ElasticClientConfig getConfig() {
         return config;
     }
