@@ -13,43 +13,40 @@ import java.util.Map;
  */
 public class BaseElasticDao implements DaoI {
 
-    private final String host;
-    private final int port;
-    private final Map<String, String> settings;
+    private BaseElasticClient baseElasticClient;
 
     public BaseElasticDao(String host, int port, Map<String, String> settings) {
-        this.host = host;
-        this.port = port;
-        this.settings = settings;
+        this.baseElasticClient = ElasticClientFactory.getInstance(host, port, settings);
     }
 
-    private BaseElasticClient getInstance() {
-        return ElasticClientFactory.getInstance(host, port, settings);
+    public BaseElasticDao(BaseElasticClient baseElasticClient) {
+        this.baseElasticClient = baseElasticClient;
     }
 
     @Override
     public <T> boolean save(T object, EntityBuilderI builder) {
-        return getInstance().index(builder.getIndexName(), builder.getTypeName(), null, builder.buildToMap(object));
+        return baseElasticClient.index(builder.getIndexName(), builder.getTypeName(), null, builder.buildToMap(object));
     }
 
     @Override
     public <T> boolean update(T object, EntityBuilderI builder) {
-        return getInstance().update(builder.getIndexName(), builder.getTypeName(), builder.buildToMap(object));
+        return baseElasticClient.update(builder.getIndexName(), builder.getTypeName(), builder.buildToMap(object));
     }
 
     @Override
     public boolean delete(String id, EntityBuilderI builder) {
-        return getInstance().delete(builder.getIndexName(), builder.getTypeName(), id);
+        return baseElasticClient.delete(builder.getIndexName(), builder.getTypeName(), id);
     }
 
     @Override
     public void delete(Map<String, Object> queryParams, EntityBuilderI builder) {
-        getInstance().delete(builder.getIndexName(), builder.getTypeName(), queryParams);
+        baseElasticClient.delete(builder.getIndexName(), builder.getTypeName(), queryParams);
     }
 
     @Override
     public <T> T getById(String id, EntityBuilderI<T> builder) {
-        Map<String, Object> stringObjectMap = getInstance().getById(builder.getIndexName(), builder.getTypeName(), id);
+        Map<String, Object> stringObjectMap =
+                baseElasticClient.getById(builder.getIndexName(), builder.getTypeName(), id);
         if (stringObjectMap == null) {
             return null;
         }
@@ -58,7 +55,8 @@ public class BaseElasticDao implements DaoI {
 
     @Override
     public <T> List<T> getByQuery(Map<String, Object> queryParams, EntityBuilderI builder) {
-        List<Map<String, Object>> maps = getInstance().getByQuery(builder.getIndexName(), builder.getTypeName(), queryParams);
+        List<Map<String, Object>> maps =
+                baseElasticClient.getByQuery(builder.getIndexName(), builder.getTypeName(), queryParams);
         List<T> tList = new ArrayList<>(maps.size());
         for (Map<String, Object> stringObjectMap : maps) {
             tList.add((T) builder.buildFromMap(stringObjectMap));
