@@ -67,6 +67,7 @@ public class BaseElasticDaoTest {
         testClass.setSomeDoubleVar(random.nextDouble());
         testClass.setSomeBooleanVar(random.nextBoolean());
         testClass.setSomeStringVar(UUID.randomUUID().toString());
+        testClass.setSomeUuid(UUID.randomUUID());
 
 
         elasticDao.save(testClass, entityBuilder);

@@ -53,8 +53,8 @@ public class Transformer<T> implements TransformerI<T> {
                 final Number doubleValue = (Number) map.get(declaredFieldsNames[i]);
                 UnsafeMemory.putObject(object, declaredFieldsOffsets[i], doubleValue != null ? doubleValue.doubleValue() : null);
             } else if (declaredFieldType == UUID.class) {
-                final UUID uuidValue = (UUID) map.get(declaredFieldsNames[i]);
-                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], uuidValue != null ? uuidValue : null);
+                final Object uuidValue = map.get(declaredFieldsNames[i]);
+                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], uuidValue != null ? UUID.fromString("" + uuidValue) : null);
             } else {
                 UnsafeMemory.putObject(object, declaredFieldsOffsets[i], map.get(declaredFieldsNames[i]));
             }
