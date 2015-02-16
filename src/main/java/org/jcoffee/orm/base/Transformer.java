@@ -5,6 +5,7 @@ import org.jcoffee.orm.UnsafeMemory;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by Aleksandr Simonchuk on 31.01.15.
@@ -28,8 +29,8 @@ public class Transformer<T> implements TransformerI<T> {
         }
     }
 
-    public T fromMap(Map<String, Object> map) {
-        Object object = UnsafeMemory.allocateInstance(clazz);
+    public T fromMap(final Map<String, Object> map) {
+        final T object = UnsafeMemory.allocateInstance(clazz);
         Class<?> declaredFieldType;
         for (int i = 0; i < declaredFields.length; i++) {
             declaredFieldType = declaredFields[i].getType();
@@ -51,16 +52,20 @@ public class Transformer<T> implements TransformerI<T> {
             } else if (declaredFieldType == Double.class) {
                 final Number doubleValue = (Number) map.get(declaredFieldsNames[i]);
                 UnsafeMemory.putObject(object, declaredFieldsOffsets[i], doubleValue != null ? doubleValue.doubleValue() : null);
+            } else if (declaredFieldType == UUID.class) {
+                final UUID uuidValue = (UUID) map.get(declaredFieldsNames[i]);
+                UnsafeMemory.putObject(object, declaredFieldsOffsets[i], uuidValue != null ? uuidValue : null);
             } else {
                 UnsafeMemory.putObject(object, declaredFieldsOffsets[i], map.get(declaredFieldsNames[i]));
             }
         }
-        return (T) object;
+        return object;
     }
 
-    public Map<String, Object> toMap(T object) {
-        Map<String, Object> map = new HashMap<>(declaredFields.length);
-        for (int i = 0; i < declaredFieldsNames.length; i++) {
+    public Map<String, Object> toMap(final T object) {
+        final Map<String, Object> map = new HashMap<>(declaredFields.length);
+        int i = declaredFieldsNames.length;
+        while (i-- > 0) {
             map.put(declaredFieldsNames[i], UnsafeMemory.getFieldObject(object, declaredFieldsOffsets[i]));
         }
         return map;

@@ -21,14 +21,14 @@ public class UnsafeMemory {
         }
     }
 
-    public static Object allocateInstance(Class aClass) {
-        Object object = null;
+    @SuppressWarnings("unchecked")
+    public static <T> T allocateInstance(Class<T> aClass) {
         try {
-            object = UNSAFE.allocateInstance(aClass);
+            return (T) UNSAFE.allocateInstance(aClass);
         } catch (InstantiationException e) {
             e.printStackTrace();
         }
-        return object;
+        return null;
     }
 
     public static Object getFieldObject(Object baseObject, long offset) {

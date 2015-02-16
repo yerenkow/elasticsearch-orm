@@ -16,7 +16,7 @@ public class EntityBuilderFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> EntityBuilder<T> getEntityBuilder(Class<T> clazz) {
+    public static <T> EntityBuilder<T> getEntityBuilder(final Class<T> clazz) {
         if (!ENTITY_BUILDER_MAP.containsKey(clazz)) {
             try {
                 LOCK.lock();

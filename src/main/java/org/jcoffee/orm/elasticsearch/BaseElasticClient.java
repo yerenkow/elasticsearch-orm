@@ -27,43 +27,42 @@ public class BaseElasticClient {
 
     private static final MatchAllQueryBuilder MATCH_ALL_QUERY = QueryBuilders.matchAllQuery();
 
-    public BaseElasticClient(Client client, ElasticClientConfig config) {
+    public BaseElasticClient(final Client client, final ElasticClientConfig config) {
         this.client = client;
         this.config = config;
     }
 
     public boolean index(String index, String type, String id, Map<String, Object> source) {
-        IndexRequestBuilder indexRequestBuilder = client.prepareIndex(index, type, id);
+        final IndexRequestBuilder indexRequestBuilder = client.prepareIndex(index, type, id);
         indexRequestBuilder.setSource(source).setOpType(CREATE);
         return indexRequestBuilder.execute().actionGet().isCreated();
     }
 
     public boolean update(String index, String type, Map<String, Object> doc) {
-        UpdateRequestBuilder updateRequestBuilder = client.prepareUpdate(index, type, doc.get("id").toString());
+        final UpdateRequestBuilder updateRequestBuilder = client.prepareUpdate(index, type, doc.get("id").toString());
         updateRequestBuilder.setRetryOnConflict(config.getRetryOnConflict()).setDoc(doc);
         return !updateRequestBuilder.execute().actionGet().isCreated();
     }
 
     public boolean delete(String index, String type, String id) {
-        DeleteRequestBuilder deleteRequestBuilder = client.prepareDelete(index, type, id);
+        final DeleteRequestBuilder deleteRequestBuilder = client.prepareDelete(index, type, id);
         return deleteRequestBuilder.execute().actionGet().isFound();
     }
 
     public void delete(String index, String type, Map<String, Object> queryParams) {
         final FilteredQueryBuilder filteredQueryBuilder =
                 QueryBuilders.filteredQuery(MATCH_ALL_QUERY, this.filterBuilderFromParams(queryParams));
-        DeleteByQueryRequestBuilder deleteByQueryRequestBuilder = client.prepareDeleteByQuery(index).setTypes(type);
+        final DeleteByQueryRequestBuilder deleteByQueryRequestBuilder = client.prepareDeleteByQuery(index).setTypes(type);
         deleteByQueryRequestBuilder.setQuery(filteredQueryBuilder);
         deleteByQueryRequestBuilder.execute().actionGet();
     }
 
     public Map<String, Object> getById(String index, String type, String id) {
-        GetRequestBuilder getRequestBuilder = client.prepareGet(index, type, id);
+        final GetRequestBuilder getRequestBuilder = client.prepareGet(index, type, id);
         return getRequestBuilder.execute().actionGet().getSourceAsMap();
     }
 
     public List<Map<String, Object>> getByQuery(String index, String type, Map<String, Object> queryParams) {
-        List<Map<String, Object>> resultList = new ArrayList<>();
 
         final FilteredQueryBuilder filteredQueryBuilder =
                 QueryBuilders.filteredQuery(MATCH_ALL_QUERY, this.filterBuilderFromParams(queryParams));
@@ -73,7 +72,9 @@ public class BaseElasticClient {
 
         final SearchResponse searchResponse = searchRequestBuilder.execute().actionGet();
 
-        for (SearchHit searchHit : searchResponse.getHits().getHits()) {
+        final SearchHit[] hits = searchResponse.getHits().getHits();
+        final List<Map<String, Object>> resultList = new ArrayList<>(hits.length);
+        for (SearchHit searchHit : hits) {
             resultList.add(searchHit.sourceAsMap());
         }
 
@@ -93,17 +94,16 @@ public class BaseElasticClient {
     }
 
     private FilterBuilder filterBuilderFromParams(Map<String, Object> queryParams) {
-        BoolFilterBuilder boolFilterBuilder = null;
-
         if (queryParams != null && queryParams.size() != 0) {
-            List<FilterBuilder> filterBuilders = new ArrayList<>(queryParams.size());
-            boolFilterBuilder = FilterBuilders.boolFilter();
+            final List<FilterBuilder> filterBuilders = new ArrayList<>(queryParams.size());
+            final BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
             for (String key : queryParams.keySet()) {
                 filterBuilders.add(FilterBuilders.termFilter(key, queryParams.get(key)));
             }
             boolFilterBuilder.must(filterBuilders.toArray(new FilterBuilder[queryParams.size()]));
+            return boolFilterBuilder;
+        } else {
+            return null;
         }
-
-        return boolFilterBuilder;
     }
 }

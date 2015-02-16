@@ -24,7 +24,7 @@ public class ElasticClientFactory {
 
     public static BaseElasticClient getInstance(String host, int port, Map<String, String> settingsMap) {
 
-        Settings settings = (settingsMap == null ? ImmutableSettings.Builder.EMPTY_SETTINGS
+        final Settings settings = (settingsMap == null ? ImmutableSettings.Builder.EMPTY_SETTINGS
                 : ImmutableSettings.settingsBuilder().put(settingsMap).build());
 
         final int key = getHashCode(host, port, settingsMap);
@@ -47,12 +47,11 @@ public class ElasticClientFactory {
     }
 
     private static int getHashCode(String host, int port, Map<String, String> settingsMap) {
-        StringBuilder builder = new StringBuilder(host).append(UNDERSCORE).append(port);
+        final StringBuilder builder = new StringBuilder(host).append(UNDERSCORE).append(port);
         if (settingsMap != null) {
             List<String> keys = new ArrayList<>(settingsMap.keySet());
             Collections.sort(keys);
-            for (int i = 0; i < keys.size(); i++) {
-                String key = keys.get(i);
+            for (String key : keys) {
                 builder.append(UNDERSCORE);
                 builder.append(key);
                 builder.append(UNDERSCORE);
@@ -68,7 +67,7 @@ public class ElasticClientFactory {
 
     public static void destroyClients() {
         final List<Integer> arrayList = new ArrayList<>(ELASTIC_CLIENT_MAP.keySet());
-        for (Integer key : arrayList) {
+        for (final Integer key : arrayList) {
             final BaseElasticClient baseElasticClient = ELASTIC_CLIENT_MAP.remove(key);
             System.out.println("Key [" + key + "] removed.");
             try {

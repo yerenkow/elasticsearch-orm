@@ -16,16 +16,16 @@ public class EntityBuilder<T> implements EntityBuilderI<T> {
     private String indexName;
     private String typeName;
 
-    public EntityBuilder(Class<T> clazz) {
+    public EntityBuilder(final Class<T> clazz) {
         this.transformer = new Transformer<>(clazz);
 
-        Index indexAnnotation = clazz.getAnnotation(Index.class);
+        final Index indexAnnotation = clazz.getAnnotation(Index.class);
         if (indexAnnotation == null)
             throw new AnnotationNotFoundException(
                     "Required annotation [" + Index.class.getName() + "] not found, class [" + clazz.getName() + "]");
         this.indexName = indexAnnotation.name();
 
-        Type typeAnnotation = clazz.getAnnotation(Type.class);
+        final Type typeAnnotation = clazz.getAnnotation(Type.class);
         if (typeAnnotation == null)
             throw new AnnotationNotFoundException(
                     "Required annotation [" + Type.class.getName() + "] not found, class [" + clazz.getName() + "]");
@@ -33,12 +33,12 @@ public class EntityBuilder<T> implements EntityBuilderI<T> {
     }
 
     @Override
-    public T buildFromMap(Map<String, Object> map) {
+    public T buildFromMap(final Map<String, Object> map) {
         return transformer.fromMap(map);
     }
 
     @Override
-    public Map<String, Object> buildToMap(T object) {
+    public Map<String, Object> buildToMap(final T object) {
         return transformer.toMap(object);
     }
 
